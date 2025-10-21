@@ -6,17 +6,10 @@ import { FloatingCart } from '@/components/FloatingCart'
 import { ProfileMenu } from '@/components/ProfileMenu'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { ShoppingCart } from 'lucide-react'
+import { ShoppingCart, Menu } from 'lucide-react'
 import { useCartUI } from '@/components/CartProvider'
 import { useCart } from '@/contexts/CartContext'
-import { Input } from '@/components/ui/input'
-
-/**
- * EDITABLE TEMPLATE - EcommerceTemplate
- * 
- * Template específico para páginas de ecommerce con header, footer y cart.
- * El agente IA puede modificar completamente el diseño, colores, layout.
- */
+import { useState } from 'react'
 
 interface EcommerceTemplateProps {
   children: ReactNode
@@ -40,32 +33,47 @@ export const EcommerceTemplate = ({
   const { openCart } = useCartUI()
   const { getTotalItems } = useCart()
   const totalItems = getTotalItems()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const header = (
-    <div className={`py-4 ${headerClassName}`}>
+    <div className={`py-4 bg-white border-b-2 border-chile-200 ${headerClassName}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/">
-              <BrandLogoLeft />
+            <Link to="/" className="flex items-center space-x-2">
+              <div className="font-carnales font-black text-3xl text-gradient-fire">
+                Los CARNALES
+              </div>
             </Link>
           </div>
 
-          {/* Navigation */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <nav className="flex space-x-6">
               <Link 
                 to="/" 
-                className="text-foreground/70 hover:text-foreground transition-colors"
+                className="text-carbon-700 hover:text-chile-600 font-bold transition-colors"
               >
-                Home
+                Shop
+              </Link>
+              <Link 
+                to="/about" 
+                className="text-carbon-700 hover:text-chile-600 font-bold transition-colors"
+              >
+                About
               </Link>
               <Link 
                 to="/blog" 
-                className="text-foreground/70 hover:text-foreground transition-colors"
+                className="text-carbon-700 hover:text-chile-600 font-bold transition-colors"
               >
-                Blog
+                Recipes
+              </Link>
+              <Link 
+                to="/contact" 
+                className="text-carbon-700 hover:text-chile-600 font-bold transition-colors"
+              >
+                Contact
               </Link>
             </nav>
           </div>
@@ -79,24 +87,70 @@ export const EcommerceTemplate = ({
                 variant="ghost"
                 size="icon"
                 onClick={openCart}
-                className="relative"
+                className="relative hover:bg-chile-100 hover:text-chile-600"
                 aria-label="Ver carrito"
               >
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="h-6 w-6" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-chile-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                     {totalItems > 99 ? '99+' : totalItems}
                   </span>
                 )}
               </Button>
             )}
+
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-chile-200 pt-4">
+            <nav className="flex flex-col space-y-3">
+              <Link 
+                to="/" 
+                className="text-carbon-700 hover:text-chile-600 font-bold transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Shop
+              </Link>
+              <Link 
+                to="/about" 
+                className="text-carbon-700 hover:text-chile-600 font-bold transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link 
+                to="/blog" 
+                className="text-carbon-700 hover:text-chile-600 font-bold transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Recipes
+              </Link>
+              <Link 
+                to="/contact" 
+                className="text-carbon-700 hover:text-chile-600 font-bold transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+            </nav>
+          </div>
+        )}
 
         {/* Page Title */}
         {pageTitle && (
           <div className="mt-6">
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-4xl font-carnales font-black text-carbon-900">
               {pageTitle}
             </h1>
           </div>
@@ -106,45 +160,87 @@ export const EcommerceTemplate = ({
   )
 
   const footer = (
-    <div className={`bg-black text-white py-12 ${footerClassName}`}>
+    <div className={`bg-gradient-to-br from-carbon-900 via-chile-900 to-carbon-900 text-white py-16 ${footerClassName}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
-          <div>
-            <BrandLogoLeft />
-            <p className="mt-4 text-white/70">
-              Your trusted online store
+          <div className="md:col-span-2">
+            <div className="font-carnales font-black text-4xl text-gradient-fire mb-4">
+              Los CARNALES
+            </div>
+            <p className="text-white/80 mb-6 max-w-md">
+              Authentic Mexican snacks with attitude. Bringing the bold flavors of Mexico straight to your door across the USA.
             </p>
+            <div className="flex items-center space-x-4">
+              <SocialLinks />
+            </div>
           </div>
 
-          {/* Links */}
+          {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4 text-white">Links</h3>
-            <div className="space-y-2">
+            <h3 className="font-carnales font-bold text-xl mb-4 text-corn-400">Quick Links</h3>
+            <div className="space-y-3">
               <Link 
                 to="/" 
-                className="block text-white/70 hover:text-white transition-colors"
+                className="block text-white/80 hover:text-corn-400 transition-colors font-semibold"
               >
-                Home
+                Shop All
+              </Link>
+              <Link 
+                to="/about" 
+                className="block text-white/80 hover:text-corn-400 transition-colors font-semibold"
+              >
+                About Us
               </Link>
               <Link 
                 to="/blog" 
-                className="block text-white/70 hover:text-white transition-colors"
+                className="block text-white/80 hover:text-corn-400 transition-colors font-semibold"
               >
-                Blog
+                Recipes & Blog
+              </Link>
+              <Link 
+                to="/contact" 
+                className="block text-white/80 hover:text-corn-400 transition-colors font-semibold"
+              >
+                Contact / Wholesale
               </Link>
             </div>
           </div>
 
-          {/* Social Links */}
+          {/* Customer Service */}
           <div>
-            <h3 className="font-semibold mb-4 text-white">Follow Us</h3>
-            <SocialLinks />
+            <h3 className="font-carnales font-bold text-xl mb-4 text-corn-400">Help</h3>
+            <div className="space-y-3">
+              <a href="#" className="block text-white/80 hover:text-corn-400 transition-colors font-semibold">
+                Shipping Info
+              </a>
+              <a href="#" className="block text-white/80 hover:text-corn-400 transition-colors font-semibold">
+                Returns
+              </a>
+              <a href="#" className="block text-white/80 hover:text-corn-400 transition-colors font-semibold">
+                FAQ
+              </a>
+              <a href="#" className="block text-white/80 hover:text-corn-400 transition-colors font-semibold">
+                Track Order
+              </a>
+            </div>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-white/20 text-center text-white/70">
-          <p>&copy; 2024 Your Store. All rights reserved.</p>
+        <div className="mt-12 pt-8 border-t border-white/20">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <p className="text-white/60 text-sm">
+              &copy; 2024 Los Carnales. All rights reserved. Made with 🌶️ in Mexico.
+            </p>
+            <div className="flex space-x-6 text-sm">
+              <a href="#" className="text-white/60 hover:text-corn-400 transition-colors">
+                Privacy Policy
+              </a>
+              <a href="#" className="text-white/60 hover:text-corn-400 transition-colors">
+                Terms of Service
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
